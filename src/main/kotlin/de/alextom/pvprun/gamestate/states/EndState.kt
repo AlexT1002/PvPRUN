@@ -4,10 +4,10 @@ import de.alextom.pvprun.gamestate.statemanager.GameState
 
 class EndState: GameState {
     override fun start() {
-        TODO("Not yet implemented")
+        println("End_STATE started!")
     }
 
     override fun stop() {
-        TODO("Not yet implemented")
+        println("End_STATE stopped!")
     }
 }

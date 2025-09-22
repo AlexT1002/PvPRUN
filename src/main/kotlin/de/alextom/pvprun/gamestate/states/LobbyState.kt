@@ -4,10 +4,10 @@ import de.alextom.pvprun.gamestate.statemanager.GameState
 
 class LobbyState:  GameState{
     override fun start() {
-        TODO("Not yet implemented")
+        println("Lobby_STATE started!")
     }
 
     override fun stop() {
-        TODO("Not yet implemented")
+        println("Lobby_STATE stopped!")
     }
 }

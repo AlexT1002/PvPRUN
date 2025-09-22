@@ -1,16 +1,18 @@
 package de.alextom.pvprun.gamestate.statemanager
 
+import de.alextom.pvprun.gamestate.states.EndState
+import de.alextom.pvprun.gamestate.states.IngameState
 import de.alextom.pvprun.gamestate.states.LobbyState
 
 class GameStateManager {
     val lobbyState: GameState = LobbyState()
-    val inGameState: GameState = LobbyState()
-    val endState: GameState = LobbyState()
+    val inGameState: GameState = IngameState()
+    val endState: GameState = EndState()
 
     var actState: GameState? = null
 
     fun startState(state: States){
-        if(!isRunning(state)) return
+        if(isRunning(state)) return
         actState?.stop()
         actState = getState(state)
         actState?.start()

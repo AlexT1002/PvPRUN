@@ -4,3 +4,6 @@ main: de.alextom.pvprun.PVPRUN
 api-version: '1.21'
 authors: [ AlexT1002 ]
 website: https://github.com/AlexT1002
+
+commands:
+  state:
