@@ -7,15 +7,17 @@ import de.alextom.pvprun.world.WorldManager
 import org.bukkit.plugin.java.JavaPlugin
 
 class PVPRUN : JavaPlugin() {
-    val gameStateManager: GameStateManager = GameStateManager()
+    var gameStateManager: GameStateManager ?= null
+    val worldManager: WorldManager = WorldManager()
 
     override fun onEnable() {
-        WorldManager()
-        gameStateManager.startState(States.LOBBY_STATE)
+        worldManager.createWorld()
+        gameStateManager = GameStateManager()
+        gameStateManager?.startState(States.LOBBY_STATE)
         getCommand("state")?.setExecutor(StateCommand())
     }
 
     override fun onDisable() {
-        // Plugin shutdown logic
+        worldManager.deleteWorld()
     }
 }

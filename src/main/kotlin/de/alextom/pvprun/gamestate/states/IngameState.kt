@@ -1,23 +1,40 @@
 package de.alextom.pvprun.gamestate.states
 
+import de.alextom.pvprun.PVPRUN
 import de.alextom.pvprun.gamestate.statemanager.GameState
+import de.alextom.pvprun.listener.PlayerMoveListener
+import de.alextom.pvprun.world.WorldManager
 import org.bukkit.Bukkit
+import org.bukkit.Location
 import org.bukkit.World
+import org.bukkit.event.player.PlayerMoveEvent
+import org.bukkit.plugin.PluginManager
+import org.bukkit.plugin.java.JavaPlugin
 import java.io.File
 
 class IngameState: GameState {
+    val plugin = JavaPlugin.getPlugin(PVPRUN::class.java)
+    val pvprunWorld: World? = Bukkit.getWorld(WorldManager().pvprunWorld)
+    val fallbackWorld: World? = Bukkit.getWorld(WorldManager().fallbackWorld)
+
     override fun start() {
-        val world: World? = Bukkit.getWorld("PvPRUN")
-        for(player in Bukkit.getOnlinePlayers()){
-            player.teleport(world?.spawnLocation ?: player.location)
-        }
+        pvprunWorld?.spawnLocation = Location(pvprunWorld, 0.0, pvprunWorld.spawnLocation.y, WorldManager().border.width.toDouble()/2)
+        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(pvprunWorld?.spawnLocation ?: player.location) }
+        registerEvents()
     }
 
     override fun stop() {
-        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(Bukkit.getWorld("world")?.spawnLocation ?: Bukkit.getWorlds().first().spawnLocation)}
-        Bukkit.unloadWorld("PvPRUN", false)
-        val worldFolder: File = File(Bukkit.getWorldContainer(), "PvPRUN")
-        worldFolder.listFiles().forEach { file -> file.delete()}
-        worldFolder.delete()
+        Bukkit.getOnlinePlayers().forEach { player -> player.teleport(fallbackWorld?.spawnLocation ?: Bukkit.getWorlds().first().spawnLocation)}
+        unregisterEvents()
+    }
+
+
+    private fun registerEvents(){
+        val pluginManager: PluginManager = Bukkit.getPluginManager()
+        pluginManager.registerEvents(PlayerMoveListener(), plugin)
+    }
+
+    private fun unregisterEvents(){
+        PlayerMoveEvent.getHandlerList().unregister(plugin)
     }
 }

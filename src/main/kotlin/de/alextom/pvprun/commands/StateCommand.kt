@@ -17,9 +17,9 @@ class StateCommand: CommandExecutor {
     ): Boolean {
         if(args.size == 1){
             when(args[0]){
-                "0" -> plugin.gameStateManager.startState(States.LOBBY_STATE)
-                "1" -> plugin.gameStateManager.startState(States.INGAME_STATE)
-                "2" -> plugin.gameStateManager.startState(States.END_STATE)
+                "0" -> plugin.gameStateManager?.startState(States.LOBBY_STATE)
+                "1" -> plugin.gameStateManager?.startState(States.INGAME_STATE)
+                "2" -> plugin.gameStateManager?.startState(States.END_STATE)
             }
         }
         return false;
