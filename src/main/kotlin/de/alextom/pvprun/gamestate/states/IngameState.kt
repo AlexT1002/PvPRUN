@@ -10,7 +10,6 @@ import org.bukkit.World
 import org.bukkit.event.player.PlayerMoveEvent
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
-import java.io.File
 
 class IngameState: GameState {
     val plugin = JavaPlugin.getPlugin(PVPRUN::class.java)
@@ -18,7 +17,11 @@ class IngameState: GameState {
     val fallbackWorld: World? = Bukkit.getWorld(WorldManager().fallbackWorld)
 
     override fun start() {
-        pvprunWorld?.spawnLocation = Location(pvprunWorld, 0.0, pvprunWorld.spawnLocation.y, WorldManager().border.width.toDouble()/2)
+        pvprunWorld?.spawnLocation = Location(pvprunWorld
+            ,0.0
+            ,pvprunWorld.getHighestBlockAt(0, WorldManager().border.width/2).y.toDouble()
+            ,WorldManager().border.width.toDouble()/2)
+
         Bukkit.getOnlinePlayers().forEach { player -> player.teleport(pvprunWorld?.spawnLocation ?: player.location) }
         registerEvents()
     }

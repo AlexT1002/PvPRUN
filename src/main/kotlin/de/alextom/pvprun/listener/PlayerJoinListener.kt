@@ -2,6 +2,7 @@ package de.alextom.pvprun.listener
 
 import de.alextom.pvprun.world.WorldManager
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -12,7 +13,11 @@ class PlayerJoinListener: Listener {
     @EventHandler
     fun onJoin(event: PlayerJoinEvent){
         val player: Player = event.player
-        event.joinMessage(Component.text("§f[§2+§f]§6 ${player.name}"))
+        val joinMSG: Component = Component.text("[", NamedTextColor.GRAY)
+            .append(Component.text("+", NamedTextColor.GREEN))
+            .append(Component.text("]", NamedTextColor.GRAY))
+            .append(Component.text(" ${player.name}", NamedTextColor.YELLOW))
+        event.joinMessage(joinMSG)
         player.teleport(Bukkit.getWorld(WorldManager().fallbackWorld)?.spawnLocation ?: player.location)
     }
 }
