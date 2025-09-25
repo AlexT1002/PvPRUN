@@ -5,9 +5,9 @@ import de.alextom.pvprun.gamestate.states.IngameState
 import de.alextom.pvprun.gamestate.states.LobbyState
 
 class GameStateManager {
-    val lobbyState: GameState = LobbyState()
-    val inGameState: GameState = IngameState()
-    val endState: GameState = EndState()
+    val lobbyState = LobbyState()
+    val inGameState = IngameState()
+    val endState = EndState()
 
     var actState: GameState? = null
 

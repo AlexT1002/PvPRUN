@@ -36,6 +36,7 @@ class Timer(var time: Int, val plugin: JavaPlugin) {
         override fun run() {
             if(paused) return
             time--
+
         }
     }
 }

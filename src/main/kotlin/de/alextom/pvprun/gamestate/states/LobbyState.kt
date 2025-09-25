@@ -5,35 +5,28 @@ import de.alextom.pvprun.gamestate.statemanager.GameState
 import de.alextom.pvprun.gamestate.statemanager.States
 import de.alextom.pvprun.listener.PlayerJoinListener
 import de.alextom.pvprun.listener.PlayerQuitListener
+import de.alextom.pvprun.scoreboard.LobbyScoreboard
 import de.alextom.pvprun.util.Timer
 import net.kyori.adventure.text.Component
-import net.kyori.adventure.text.format.NamedTextColor
 import org.bukkit.Bukkit
-import org.bukkit.entity.Player
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.PluginManager
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitRunnable
-import org.bukkit.scoreboard.Criteria
-import org.bukkit.scoreboard.DisplaySlot
-import org.bukkit.scoreboard.Objective
-import org.bukkit.scoreboard.Scoreboard
-import org.bukkit.scoreboard.ScoreboardManager
 
 class LobbyState:  GameState{
     val plugin = JavaPlugin.getPlugin(PVPRUN::class.java)
     val minPlayers: Int = 2
     val timer: Timer = Timer(61, plugin)
     val checkTask: CheckTask = CheckTask()
-    val sbManager: ScoreboardManager = Bukkit.getScoreboardManager()
-    val sb : Scoreboard = sbManager.newScoreboard
-    var sbObjective: Objective = sb.registerNewObjective("LobbySB", Criteria.DUMMY, Component.text("PVPRUN", NamedTextColor.DARK_PURPLE))
+    val scoreboard: LobbyScoreboard = LobbyScoreboard()
 
     override fun start() {
         registerEvents()
         checkTask.runTaskTimer(plugin, 0L, 20L)
         timer.startTimer()
+        scoreboard.setTimer(if(isEnoughPlayer()) timer.time.toString() else "Not Enough Player")
     }
 
     override fun stop() {
@@ -61,16 +54,6 @@ class LobbyState:  GameState{
         return Bukkit.getOnlinePlayers().size >= Bukkit.getMaxPlayers()
     }
 
-    fun updateScoreboard(){
-        sb.entries.forEach { sb.resetScores(it) }
-        sbObjective.displaySlot = DisplaySlot.SIDEBAR
-        sbObjective.getScore("Timer").score = 4
-        sbObjective.getScore(if(timer.isPaused()) "Not Enough Player" else "${timer.time}").score = 3
-        sbObjective.getScore("").score = 2
-        sbObjective.getScore("Online").score = 1
-        sbObjective.getScore("${Bukkit.getOnlinePlayers().size}/${Bukkit.getMaxPlayers()}").score = 0
-    }
-
     inner class CheckTask: BukkitRunnable() {
         override fun run() {
             if(isServerFull() || isEnoughPlayer()){
@@ -87,9 +70,9 @@ class LobbyState:  GameState{
                     }
                     0 -> plugin.gameStateManager?.startState(States.INGAME_STATE)
                 }
+                scoreboard.setTimer(timer.time.toString())
             }
-            Bukkit.getOnlinePlayers().forEach { player -> player.scoreboard = sb }
-            updateScoreboard()
+            scoreboard.updateScoreboard()
         }
     }
 }
